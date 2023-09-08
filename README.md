@@ -35,9 +35,7 @@ Wire Wizard QR is a bash script designed to make it easy for you to generate Wir
 Clone this repository or download the script and run it in a terminal window.
 
 ```bash
-git clone https://github.com/jacobgraf/wirewizardqr.git
-cd wirewizardqr
-chmod +x wire-wizard-qr.sh
+git clone https://github.com/jacobgraf/wirewizardqr.git && cd wirewizardqr && chmod +x wire-wizard-qr.sh
 ```
 
 ## Usage
