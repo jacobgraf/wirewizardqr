@@ -34,19 +34,19 @@ Wire Wizard QR is a bash script designed to make it easy for you to generate Wir
 
 Clone this repository or download the script and run it in a terminal window.
 
-\`\`\`bash
+```bash
 git clone https://github.com/jacobgraf/wirewizardqr.git
 cd Wire-Wizard-QR
 chmod +x wire-wizard-qr.sh
-\`\`\`
+```
 
 ## Usage
 
 Execute the script by running:
 
-\`\`\`bash
+```bash
 ./wire-wizard-qr.sh
-\`\`\`
+```
 
 Follow the on-screen prompts to generate your WireGuard configurations and QR Codes. The generated files will be saved in a directory specified during the script execution.
 
