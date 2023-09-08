@@ -21,9 +21,9 @@ defaultInterfaceAddress="10.10.10.2/32"
 # Default DNS Server
 defaultDNSServer="192.168.1.1"
 
-# Predefined Public Key Server Names & Associated Keys
-publicKeyNames=("Server 1" "Server 2" "Server 3")
-publicKeys=("public-key-1" "public-key-2" "public-key-3")
+# Predefined Server Names & Public Keys
+serverNames=("Server 1" "Server 2" "Server 3")
+serverPublicKeys=("public-key-1" "public-key-2" "public-key-3")
 
 # Prefefined WireGuard Endpoints
 endpoints=("11.11.11.11" "22.22.22.22" "33.33.33.33")
@@ -54,26 +54,26 @@ kebabCaseDeviceName=$(echo "$deviceName" | tr '[:upper:]' '[:lower:]' | tr ' ' '
 outputDir="WireGuard - $deviceName"
 mkdir -p "$outputDir"
 
-# Select Public Key
+# Select Server
 echo
-echo "Select Public Key:"
+echo "Select Server:"
 echo
-for i in "${!publicKeyNames[@]}"; do
-  echo "$((i + 1)). ${publicKeyNames[i]}"
+for i in "${!serverNames[@]}"; do
+  echo "$((i + 1)). ${serverNames[i]}"
 done
-echo "$((${#publicKeyNames[@]} + 1)). Other"
+echo "$((${#serverNames[@]} + 1)). Other"
 echo
-read -p "Choice [${publicKeyNames[0]}]: " choice
+read -p "Choice [${serverNames[0]}]: " choice
 if [[ -z "$choice" ]]; then
-  name="${publicKeyNames[0]}"
-  publicKey="${publicKeys[0]}"
+  name="${serverNames[0]}"
+  serverPublicKey="${serverPublicKeys[0]}"
 else
-  if [[ "$choice" -eq "$((${#publicKeyNames[@]} + 1))" ]]; then
+  if [[ "$choice" -eq "$((${#serverNames[@]} + 1))" ]]; then
     echo
-    read -p "Enter Public Key: " publicKey
+    read -p "Enter Server Public Key: " serverPublicKey
   else
-    name="${publicKeyNames[$((choice - 1))]}"
-    publicKey="${publicKeys[$((choice - 1))]}"
+    name="${serverNames[$((choice - 1))]}"
+    serverPublicKey="${serverPublicKeys[$((choice - 1))]}"
   fi
 fi
 
@@ -119,20 +119,20 @@ echo
 echo "Generating keys..."
 wg genkey | tee "$outputDir/key-private-$kebabCaseDeviceName.key" | wg pubkey >"$outputDir/key-public-$kebabCaseDeviceName.key"
 
-privateKey=$(cat "$outputDir/key-private-$kebabCaseDeviceName.key")
-publicKey=$(cat "$outputDir/key-public-$kebabCaseDeviceName.key")
+devicePrivateKey=$(cat "$outputDir/key-private-$kebabCaseDeviceName.key")
+devicePublicKey=$(cat "$outputDir/key-public-$kebabCaseDeviceName.key")
 
 echo
 echo "Creating WireGuard config..."
 configFile="$outputDir/$deviceName.conf"
 cat >"$configFile" <<EOL
 [Interface]
-PrivateKey = $privateKey
+PrivateKey = $devicePrivateKey
 Address = ${interfaceAddress:-$defaultInterfaceAddress}
 DNS = ${dnsServer:-$defaultDNSServer}
 
 [Peer]
-PublicKey = $publicKey
+PublicKey = $serverPublicKey
 AllowedIPs = ${allowedIPs:-$defaultAllowedIPs}
 Endpoint = ${endpoint}:${port:-$defaultPort}
 EOL
@@ -145,6 +145,11 @@ qrencode -r "$configFile" -o "$outputDir/$deviceName.png"
 # Script Complete!
 echo
 echo "All done! Files are saved in the directory $outputDir."
+
+# Output Newly Generated Device Public Key
+echo
+echo $devicePublicKey | pbcopy
+echo "Device Public Key (Copied to Clipboard): $devicePublicKey"
 
 # Ask to run again
 while true; do
