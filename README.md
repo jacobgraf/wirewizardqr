@@ -36,7 +36,7 @@ Clone this repository or download the script and run it in a terminal window.
 
 ```bash
 git clone https://github.com/jacobgraf/wirewizardqr.git
-cd Wire-Wizard-QR
+cd wirewizardqr
 chmod +x wire-wizard-qr.sh
 ```
 
